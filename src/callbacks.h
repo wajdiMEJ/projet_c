@@ -1,134 +1,109 @@
-#ifndef CALLBACKS_H
-#define CALLBACKS_H
-
 #include <gtk/gtk.h>
 
-// Declaration of the functions
-void on_button_ajouter_clicked(GtkButton *button, gpointer user_data);
-
-
 
 void
-on_button__rechercher_clicked          (GtkButton       *button,
+on_button_valider_clicked              (GtkWidget *objet_graphique, gpointer user_data);
+
+void
+on_button_modifier_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_radiobutton_homme_toggled           (GtkToggleButton *togglebutton,
+on_button_cherhcer_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_radiobutton_femme_toggled           (GtkToggleButton *togglebutton,
+on_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_checkbutton_maintenence_toggled     (GtkToggleButton *togglebutton,
+on_button_chercher_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_checkbutton_securite_toggled        (GtkToggleButton *togglebutton,
+on_button_modifier_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_checkbutton_agent_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-
-void
-on_radiobutton__homme_toggled           (GtkToggleButton *togglebutton,
+on_button_afficher_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_radiobutton__femme_toggled           (GtkToggleButton *togglebutton,
+on_button_treeview_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button__modifier_clicked            (GtkButton       *button,
+on_button_chercher_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button__supprimer__clicked          (GtkButton       *button,
+on_button_thez_modifier_clicked        (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button__affrev_clicked              (GtkButton       *button,
+on_button_supprimer_clicked            (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button2__rechercher_clicked         (GtkButton       *button,
+on_button_login_clicked                (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button__ajouter_clicked             (GtkButton       *button,
+on_button_newacoount_clicked           (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button_retour_clicked               (GtkButton       *button,
+on_button_mesinformations_clicked      (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button2__retour__rech_clicked       (GtkButton       *button,
+on_button_modifermesinfos_clicked      (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button____RECHERCHER__clicked       (GtkButton       *button,
+on_button_help1_clicked                (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button__MODIFIER__clicked           (GtkButton       *button,
+on_button_help3_clicked                (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button2__retour__mod_clicked        (GtkButton       *button,
-                                        gpointer         user_data);
-
-void on_radiobutton____homme_toggled(GtkToggleButton *togglebutton, gpointer user_data);
-void on_radiobutton____femme_toggled(GtkToggleButton *togglebutton, gpointer user_data);
-
-
-
-
-
-void
-on_radiobutton_____homme_toggled       (GtkToggleButton *togglebutton,
+on_button_help2_clicked                (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_radiobutton_____femme_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-
-
-
-void
-on_button___rechercher_clicked         (GtkButton       *button,
+on_button_envoyer_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_buttonsearch_clicked                (GtkButton       *button,
+on_checkbutton1_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_buttonsup_clicked                   (GtkButton       *button,
+on_button_tarjee_bienvenue_clicked     (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_button3retouur_clicked              (GtkButton       *button,
+on_button_back_compte_clicked          (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_buttonretourlistes_clicked          (GtkButton       *button,
+on_button_anuuler_help_clicked         (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_buttonlisteagent_clicked            (GtkButton       *button,
+on_button_fermer2_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_buttonafficherlaliste__clicked      (GtkButton       *button,
+on_button_fermer1_clicked              (GtkButton       *button,
                                         gpointer         user_data);
 
-#endif
+void
+on_button_fermer_citoyen_clicked       (GtkButton       *button,
+                                        gpointer         user_data);
 
 void
-on_afficherlesagents_clicked           (GtkButton       *button,
+on_button_fermer_compte_clicked        (GtkButton       *button,
                                         gpointer         user_data);

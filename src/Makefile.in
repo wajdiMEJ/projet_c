@@ -86,7 +86,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = finall$(EXEEXT)
+bin_PROGRAMS = finaleee$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -99,11 +99,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_finall_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
-	interface.$(OBJEXT) callbacks.$(OBJEXT) agent.$(OBJEXT)
-finall_OBJECTS = $(am_finall_OBJECTS)
+am_finaleee_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
+	interface.$(OBJEXT) callbacks.$(OBJEXT) citoyen.$(OBJEXT)
+finaleee_OBJECTS = $(am_finaleee_OBJECTS)
 am__DEPENDENCIES_1 =
-finall_DEPENDENCIES = $(am__DEPENDENCIES_1)
+finaleee_DEPENDENCIES = $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -132,8 +132,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(finall_SOURCES)
-DIST_SOURCES = $(finall_SOURCES)
+SOURCES = $(finaleee_SOURCES)
+DIST_SOURCES = $(finaleee_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -277,14 +277,14 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	@PACKAGE_CFLAGS@
 
-finall_SOURCES = \
+finaleee_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	agent.c agent.h
+	citoyen.c citoyen.h
 
-finall_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
+finaleee_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 all: all-am
 
 .SUFFIXES:
@@ -361,9 +361,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-finall$(EXEEXT): $(finall_OBJECTS) $(finall_DEPENDENCIES) $(EXTRA_finall_DEPENDENCIES) 
-	@rm -f finall$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(finall_OBJECTS) $(finall_LDADD) $(LIBS)
+finaleee$(EXEEXT): $(finaleee_OBJECTS) $(finaleee_DEPENDENCIES) $(EXTRA_finaleee_DEPENDENCIES) 
+	@rm -f finaleee$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(finaleee_OBJECTS) $(finaleee_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -371,8 +371,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/agent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callbacks.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/citoyen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/support.Po@am__quote@

@@ -437,7 +437,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/wajdime/finall/finall'
+ac_pwd='/home/badis/Projects/finaleee'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/bin/mkdir -p'
@@ -639,7 +639,7 @@ S["MSGFMT_OPTS"]="-c"
 S["MSGFMT"]="/usr/bin/msgfmt"
 S["INTL_MACOSX_LIBS"]=""
 S["USE_NLS"]="yes"
-S["GETTEXT_PACKAGE"]="finall"
+S["GETTEXT_PACKAGE"]="finaleee"
 S["PACKAGE_LIBS"]="-lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfont"\
 "config -lfreetype"
 S["PACKAGE_CFLAGS"]="-pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1"\
@@ -686,14 +686,14 @@ S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]=""
-S["install_sh"]="${SHELL} /home/wajdime/finall/finall/install-sh"
-S["MAKEINFO"]="${SHELL} /home/wajdime/finall/finall/missing makeinfo"
-S["AUTOHEADER"]="${SHELL} /home/wajdime/finall/finall/missing autoheader"
-S["AUTOMAKE"]="${SHELL} /home/wajdime/finall/finall/missing automake-1.15"
-S["AUTOCONF"]="${SHELL} /home/wajdime/finall/finall/missing autoconf"
-S["ACLOCAL"]="${SHELL} /home/wajdime/finall/finall/missing aclocal-1.15"
+S["install_sh"]="${SHELL} /home/badis/Projects/finaleee/install-sh"
+S["MAKEINFO"]="${SHELL} /home/badis/Projects/finaleee/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/badis/Projects/finaleee/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /home/badis/Projects/finaleee/missing automake-1.15"
+S["AUTOCONF"]="${SHELL} /home/badis/Projects/finaleee/missing autoconf"
+S["ACLOCAL"]="${SHELL} /home/badis/Projects/finaleee/missing aclocal-1.15"
 S["VERSION"]="0.1"
-S["PACKAGE"]="finall"
+S["PACKAGE"]="finaleee"
 S["CYGPATH_W"]="echo"
 S["am__isrc"]=""
 S["INSTALL_DATA"]="${INSTALL} -m 644"
@@ -785,10 +785,10 @@ D["PACKAGE_VERSION"]=" \"\""
 D["PACKAGE_STRING"]=" \"\""
 D["PACKAGE_BUGREPORT"]=" \"\""
 D["PACKAGE_URL"]=" \"\""
-D["PACKAGE"]=" \"finall\""
+D["PACKAGE"]=" \"finaleee\""
 D["VERSION"]=" \"0.1\""
 D["STDC_HEADERS"]=" 1"
-D["GETTEXT_PACKAGE"]=" \"finall\""
+D["GETTEXT_PACKAGE"]=" \"finaleee\""
 D["HAVE_SYS_TYPES_H"]=" 1"
 D["HAVE_SYS_STAT_H"]=" 1"
 D["HAVE_STDLIB_H"]=" 1"

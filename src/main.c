@@ -12,16 +12,10 @@
 #include "interface.h"
 #include "support.h"
 
-
-
-
-
-
-/*
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *ajouter;
+  GtkWidget *window4;
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -39,44 +33,10 @@ main (int argc, char *argv[])
    * (except popup menus), just so that you see something after building
    * the project. Delete any components that you don't want shown initially.
    */
-/*
-  ajouter = create_ajouter ();
-  gtk_widget_show (ajouter);
+  window4 = create_window4 ();
+  gtk_widget_show (window4);
 
   gtk_main ();
   return 0;
-}
-*/
-
-
-
-
-
-
-int main (int argc, char *argv[])
-{
-    GtkWidget *HOME;
-
-#ifdef ENABLE_NLS
-    bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-    textdomain (GETTEXT_PACKAGE);
-#endif
-
-    gtk_set_locale ();
-    gtk_init (&argc, &argv);
-
-    add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
-
-    /*
-     * The following code was added by Glade to create one of each component
-     * (except popup menus), just so that you see something after building
-     * the project. Delete any components that you don't want shown initially.
-     */
-    HOME = create_HOME();
-    gtk_widget_show(HOME);
-
-    gtk_main ();
-    return 0;
 }
 

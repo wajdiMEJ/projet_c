@@ -2702,7 +2702,7 @@ fi
 
 # Define the identity of the package.
 
- PACKAGE=finall
+ PACKAGE=finaleee
  VERSION=0.1
 
 
@@ -5968,7 +5968,7 @@ fi
 
 
 
-GETTEXT_PACKAGE=finall
+GETTEXT_PACKAGE=finaleee
 
 
 cat >>confdefs.h <<_ACEOF

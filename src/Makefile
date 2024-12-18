@@ -70,10 +70,10 @@ am__make_running_with_option = \
   test $$has_opt = yes
 am__make_dryrun = (target_option=n; $(am__make_running_with_option))
 am__make_keepgoing = (target_option=k; $(am__make_running_with_option))
-pkgdatadir = $(datadir)/finall
-pkgincludedir = $(includedir)/finall
-pkglibdir = $(libdir)/finall
-pkglibexecdir = $(libexecdir)/finall
+pkgdatadir = $(datadir)/finaleee
+pkgincludedir = $(includedir)/finaleee
+pkglibdir = $(libdir)/finaleee
+pkglibexecdir = $(libexecdir)/finaleee
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
 install_sh_PROGRAM = $(install_sh) -c
@@ -86,7 +86,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = finall$(EXEEXT)
+bin_PROGRAMS = finaleee$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
@@ -99,11 +99,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_finall_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
-	interface.$(OBJEXT) callbacks.$(OBJEXT) agent.$(OBJEXT)
-finall_OBJECTS = $(am_finall_OBJECTS)
+am_finaleee_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
+	interface.$(OBJEXT) callbacks.$(OBJEXT) citoyen.$(OBJEXT)
+finaleee_OBJECTS = $(am_finaleee_OBJECTS)
 am__DEPENDENCIES_1 =
-finall_DEPENDENCIES = $(am__DEPENDENCIES_1)
+finaleee_DEPENDENCIES = $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -132,8 +132,8 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(finall_SOURCES)
-DIST_SOURCES = $(finall_SOURCES)
+SOURCES = $(finaleee_SOURCES)
+DIST_SOURCES = $(finaleee_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -160,12 +160,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/wajdime/finall/finall/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/badis/Projects/finaleee/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/wajdime/finall/finall/missing autoconf
-AUTOHEADER = ${SHELL} /home/wajdime/finall/finall/missing autoheader
-AUTOMAKE = ${SHELL} /home/wajdime/finall/finall/missing automake-1.15
+AUTOCONF = ${SHELL} /home/badis/Projects/finaleee/missing autoconf
+AUTOHEADER = ${SHELL} /home/badis/Projects/finaleee/missing autoheader
+AUTOMAKE = ${SHELL} /home/badis/Projects/finaleee/missing automake-1.15
 AWK = mawk
 CATALOGS = 
 CATOBJEXT = .gmo
@@ -183,7 +183,7 @@ ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
 EXEEXT = 
-GETTEXT_PACKAGE = finall
+GETTEXT_PACKAGE = finaleee
 GMOFILES = 
 GMSGFMT = /usr/bin/msgfmt
 GREP = /bin/grep
@@ -200,13 +200,13 @@ LIBOBJS =
 LIBS = 
 LTLIBOBJS = 
 MAINT = 
-MAKEINFO = ${SHELL} /home/wajdime/finall/finall/missing makeinfo
+MAKEINFO = ${SHELL} /home/badis/Projects/finaleee/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 MSGFMT_OPTS = -c
 OBJEXT = o
-PACKAGE = finall
+PACKAGE = finaleee
 PACKAGE_BUGREPORT = 
 PACKAGE_CFLAGS = -pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng16 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16
 PACKAGE_LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype
@@ -229,10 +229,10 @@ STRIP =
 USE_NLS = yes
 VERSION = 0.1
 XGETTEXT = /usr/bin/xgettext
-abs_builddir = /home/wajdime/finall/finall/src
-abs_srcdir = /home/wajdime/finall/finall/src
-abs_top_builddir = /home/wajdime/finall/finall
-abs_top_srcdir = /home/wajdime/finall/finall
+abs_builddir = /home/badis/Projects/finaleee/src
+abs_srcdir = /home/badis/Projects/finaleee/src
+abs_top_builddir = /home/badis/Projects/finaleee
+abs_top_srcdir = /home/badis/Projects/finaleee
 ac_ct_CC = gcc
 am__include = include
 am__leading_dot = .
@@ -251,7 +251,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/wajdime/finall/finall/install-sh
+install_sh = ${SHELL} /home/badis/Projects/finaleee/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -277,14 +277,14 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-pthread -I/usr/include/gtk-2.0 -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include -I/usr/include/gio-unix-2.0/ -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/libpng16 -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/libpng16
 
-finall_SOURCES = \
+finaleee_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	agent.c agent.h
+	citoyen.c citoyen.h
 
-finall_LDADD = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype $(INTLLIBS)
+finaleee_LDADD = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype $(INTLLIBS)
 all: all-am
 
 .SUFFIXES:
@@ -361,9 +361,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-finall$(EXEEXT): $(finall_OBJECTS) $(finall_DEPENDENCIES) $(EXTRA_finall_DEPENDENCIES) 
-	@rm -f finall$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(finall_OBJECTS) $(finall_LDADD) $(LIBS)
+finaleee$(EXEEXT): $(finaleee_OBJECTS) $(finaleee_DEPENDENCIES) $(EXTRA_finaleee_DEPENDENCIES) 
+	@rm -f finaleee$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(finaleee_OBJECTS) $(finaleee_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -371,8 +371,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/agent.Po
 include ./$(DEPDIR)/callbacks.Po
+include ./$(DEPDIR)/citoyen.Po
 include ./$(DEPDIR)/interface.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/support.Po

@@ -315,8 +315,8 @@ top_srcdir = @top_srcdir@
 SUBDIRS = src po
 EXTRA_DIST = \
 	autogen.sh \
-	finall.glade \
-	finall.gladep
+	finaleee.glade \
+	finaleee.gladep
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

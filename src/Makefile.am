@@ -5,14 +5,14 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	@PACKAGE_CFLAGS@
 
-bin_PROGRAMS = finall
+bin_PROGRAMS = finaleee
 
-finall_SOURCES = \
+finaleee_SOURCES = \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
-	callbacks.c callbacks.h \
-	agent.c agent.h
+	callbacks.c callbacks.h \ 
+	citoyen.c citoyen.h
 
-finall_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
+finaleee_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

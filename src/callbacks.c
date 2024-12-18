@@ -1,72 +1,81 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
-
+#include "citoyen.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 
+void
+on_button_valider_clicked              (GtkWidget *objet_graphique, gpointer user_data)
+{
 
+    // Récupérer les widgets depuis l'interface
+    GtkWidget *entry_nom = lookup_widget(objet_graphique, "entry_nom");
+    GtkWidget *entry_id = lookup_widget(objet_graphique, "entry_id");
+    GtkWidget *entry_mail = lookup_widget(objet_graphique, "entry_mail");
+    GtkWidget *entry_telephone = lookup_widget(objet_graphique, "entry_telephone");
+    GtkWidget *entry_passe = lookup_widget(objet_graphique, "entry_passe");
+    GtkWidget *spinbutton_jours = lookup_widget(objet_graphique, "spinbutton_jours");
+    GtkWidget *spinbutton_mois = lookup_widget(objet_graphique, "spinbutton_mois");
+    GtkWidget *spinbutton_annee = lookup_widget(objet_graphique, "spinbutton_annee");
+    GtkWidget *combobox_gouvernorat = lookup_widget(objet_graphique, "comboboxentry_gouvernorat");
+    GtkWidget *radiobutton_femme = lookup_widget(objet_graphique, "radiobutton_femme");
+    GtkWidget *checkbutton_acceptez = lookup_widget(objet_graphique, "checkbutton_aaceptez");
 
-#define FILENAME "agent.txt"
+    // Extraction des valeurs saisies
+    Citoyen c;
+    strcpy(c.nom, gtk_entry_get_text(GTK_ENTRY(entry_nom)));
+    strcpy(c.id, gtk_entry_get_text(GTK_ENTRY(entry_id)));
+    strcpy(c.email, gtk_entry_get_text(GTK_ENTRY(entry_mail)));
+    strcpy(c.telephone, gtk_entry_get_text(GTK_ENTRY(entry_telephone)));
+    strcpy(c.mot_de_passe, gtk_entry_get_text(GTK_ENTRY(entry_passe)));
+    c.jour = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_jours));
+    c.mois = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_mois));
+    c.annee = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_annee));
 
-// Fonction pour ajouter un agent
+    const char *gouvernorat = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combobox_gouvernorat));
+    if (gouvernorat != NULL) {
+        strcpy(c.gouvernorat, gouvernorat);
+    } else {
+        strcpy(c.gouvernorat, "Inconnu");
+    }
 
+    strcpy(c.sexe, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radiobutton_femme)) ? "Femme" : "Homme");
 
+    gboolean accepte = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_acceptez));
 
-void on_button_ajouter_clicked(GtkButton *button, gpointer user_data) {
-    GtkWidget *entry_id = lookup_widget(GTK_WIDGET(button), "entry_id");
-    GtkWidget *entry_nom = lookup_widget(GTK_WIDGET(button), "entry_nom");
-    GtkWidget *entry_prenom = lookup_widget(GTK_WIDGET(button), "entry_prenom");
-    GtkWidget *entry_cin = lookup_widget(GTK_WIDGET(button), "entry_cin");
-    GtkWidget *spinbutton_jours = lookup_widget(GTK_WIDGET(button), "spinbutton_jours");
-    GtkWidget *spinbutton_mois = lookup_widget(GTK_WIDGET(button), "spinbutton_mois");
-    GtkWidget *spinbutton_annee = lookup_widget(GTK_WIDGET(button), "spinbutton_annee");
-    GtkWidget *entry_telephone = lookup_widget(GTK_WIDGET(button), "entry_telephone");
-    GtkWidget *entry_mail = lookup_widget(GTK_WIDGET(button), "entry_mail");
-    GtkWidget *spinbutton_salaire = lookup_widget(GTK_WIDGET(button), "spinbutton_salaire");
-    GtkWidget *comboboxentry_gouvernorat = lookup_widget(GTK_WIDGET(button), "comboboxentry_gouvernorat");
-    GtkWidget *radiobutton_femme = lookup_widget(GTK_WIDGET(button), "radiobutton_femme");
-
-    GtkWidget *checkbutton_maintenence = lookup_widget(GTK_WIDGET(button), "checkbutton_maintenence");
-    GtkWidget *checkbutton_securite = lookup_widget(GTK_WIDGET(button), "checkbutton_securite");
-    GtkWidget *checkbutton_agent = lookup_widget(GTK_WIDGET(button), "checkbutton_agent");
-
-    const char *id = gtk_entry_get_text(GTK_ENTRY(entry_id));
-    const char *nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
-    const char *prenom = gtk_entry_get_text(GTK_ENTRY(entry_prenom));
-    const char *cin = gtk_entry_get_text(GTK_ENTRY(entry_cin));
-    int jour = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_jours));
-    int mois = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_mois));
-    int annee = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_annee));
-    const char *telephone = gtk_entry_get_text(GTK_ENTRY(entry_telephone));
-    const char *mail = gtk_entry_get_text(GTK_ENTRY(entry_mail));
-    int salaire = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_salaire));
-    const char *gouvernorat = gtk_combo_box_get_active_text(GTK_COMBO_BOX(comboboxentry_gouvernorat));
-
-    const char *sexe = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radiobutton_femme)) ? "Femme" : "Homme";
-
-    const char *poste_maintenance = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_maintenence)) ? "Maintenance" : "";
-    const char *poste_securite = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_securite)) ? "Sécurité" : "";
-    const char *poste_agent = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_agent)) ? "Agent" : "";
-
-    // Validation de base
-    if (strlen(id) == 0 || strlen(nom) == 0 || strlen(prenom) == 0 || strlen(cin) == 0) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
+    // Vérifications des champs obligatoires
+    if (!accepte) {
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(objet_graphique)),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
-                                                   "Veuillez remplir tous les champs obligatoires.");
+                                                   "Veuillez accepter les conditions générales.");
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         return;
     }
 
-    // Vérification de l'adresse e-mail
-    if (strchr(mail, '@') == NULL) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
+
+// 
+
+
+    if (strlen(c.nom) == 0 || strlen(c.id) == 0 || strlen(c.email) == 0 || strlen(c.telephone) == 0 || strlen(c.mot_de_passe) == 0) {
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(objet_graphique)),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
+                                                   GTK_BUTTONS_OK,
+                                                   "Tous les champs sont obligatoires.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+// Vérification de l'adresse e-mail
+    if (strchr(c.email, '@') == NULL) {
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(objet_graphique)),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
                                                    "Veuillez entrer une adresse e-mail valide (doit contenir '@').");
         gtk_dialog_run(GTK_DIALOG(dialog));
@@ -74,874 +83,215 @@ void on_button_ajouter_clicked(GtkButton *button, gpointer user_data) {
         return;
     }
 
-    // Vérification de l'unicité de l'ID
-    FILE *file = fopen("agent.txt", "r");
-    if (file == NULL) {
-        fprintf(stderr, "Erreur : Impossible d'ouvrir le fichier %s\n", "agent.txt");
-        return;
-    }
 
-    char line[512];
-    int id_exists = 0; // Variable pour vérifier si l'ID existe déjà
-    while (fgets(line, sizeof(line), file) != NULL) {
-        char existing_id[50];
-        sscanf(line, "%49[^;]", existing_id);
-        if (strcmp(existing_id, id) == 0) {
-            id_exists = 1; // L'ID existe déjà
-            break;
+
+// Ajouter le citoyen dans le fichier
+ajouter_citoyen(c);
+
+// Afficher un message de confirmation
+GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(objet_graphique)),
+                                           GTK_DIALOG_MODAL,
+                                           GTK_MESSAGE_INFO,
+                                           GTK_BUTTONS_OK,
+                                           "Données enregistrées avec succès !");
+gtk_dialog_run(GTK_DIALOG(dialog));
+gtk_widget_destroy(dialog);
+
+}
+
+
+
+
+
+
+
+void on_button_chercher_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *entry_id = lookup_widget(GTK_WIDGET(button), "e_id");
+    GtkWidget *treeview = lookup_widget(GTK_WIDGET(button), "tableau_treeview");
+
+    if (GTK_IS_ENTRY(entry_id)) {
+        const char *id_recherche = gtk_entry_get_text(GTK_ENTRY(entry_id));
+
+        if (strlen(id_recherche) == 0) {
+            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                       GTK_DIALOG_MODAL,
+                                                       GTK_MESSAGE_ERROR,
+                                                       GTK_BUTTONS_OK,
+                                                       "Veuillez entrer un ID valide.");
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+            return;
         }
-    }
-    fclose(file);
 
-    // Si l'ID existe déjà, afficher un message d'erreur
-    if (id_exists) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Impossible d'ajouter : L'ID existe déjà.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    // Écrire les informations dans le fichier
-    file = fopen("agent.txt", "a");
-    if (file == NULL) {
-        fprintf(stderr, "Erreur : Impossible d'ouvrir le fichier %s\n", "agent.txt");
-        return;
-    }
-
-    fprintf(file, "%s;%s;%s;%s;%d/%d/%d;%s;%s;%d;%s;%s;%s;%s;%s\n",
-            id, nom, prenom, cin, jour, mois, annee, telephone, mail, salaire, gouvernorat, sexe,
-            poste_maintenance, poste_securite, poste_agent);
-    fclose(file);
-
-    // Afficher un message de confirmation
-    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                               GTK_DIALOG_DESTROY_WITH_PARENT,
-                                               GTK_MESSAGE_INFO,
-                                               GTK_BUTTONS_OK,
-                                               "Agent ajouté avec succès.");
-    gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-}
-
-
-
-
-// Déclaration globale des variables si nécessaire
-int x = 0, y = 0;
-
-// Fonction de rappel pour radiobutton_homme
-
-void
-on_radiobutton_homme_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-if (gtk_toggle_button_get_active(togglebutton)) {
-        y = 1;
-        g_print("Homme sélectionné, y = %d\n", y);
-    }
-
-}
-
-// Fonction de rappel pour radiobutton_femme
-
-void
-on_radiobutton_femme_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-if (gtk_toggle_button_get_active(togglebutton)) {
-        y = 2;
-        g_print("Femme sélectionnée, y = %d\n", y);
-    }
-}
-
-
-// Fonction de rappel pour checkbutton_maintenence
-void on_checkbutton_maintenence_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
-    if (gtk_toggle_button_get_active(togglebutton)) {
-        x = 1;
-        g_print("Maintenance activée, x = %d\n", x);
-    } else {
-        x = 0;
-        g_print("Maintenance désactivée, x = %d\n", x);
-    }
-}
-
-// Fonction de rappel pour checkbutton_securite
-void on_checkbutton_securite_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
-    if (gtk_toggle_button_get_active(togglebutton)) {
-        x = 2;
-        g_print("Sécurité activée, x = %d\n", x);
-    } else {
-        x = 0;
-        g_print("Sécurité désactivée, x = %d\n", x);
-    }
-}
-
-// Fonction de rappel pour checkbutton_agent
-void on_checkbutton_agent_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
-    if (gtk_toggle_button_get_active(togglebutton)) {
-        x = 3;
-        g_print("Agent activé, x = %d\n", x);
-    } else {
-        x = 0;
-        g_print("Agent désactivé, x = %d\n", x);
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-//////////////////////
-
-void remplir_treeview(GtkWidget *treeview, const char *line);
-
-void on_button___rechercher_clicked(GtkButton *button, gpointer user_data) {
-    // Récupération de l'entrée associée pour la recherche
-    GtkWidget *entry__rechercher = lookup_widget(GTK_WIDGET(button), "entry__rechercher");
-    GtkWidget *treeview = lookup_widget(GTK_WIDGET(button), "treeview1"); // Récupération du TreeView
-    
-    // Récupération de l'ID entré par l'utilisateur
-    const char *id_recherche = gtk_entry_get_text(GTK_ENTRY(entry__rechercher));
-
-    // Validation de l'entrée
-    if (strlen(id_recherche) == 0) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Veuillez entrer un ID à rechercher.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    // Ouverture du fichier agent.txt en lecture
-    FILE *file = fopen("agent.txt", "r");
-    if (file == NULL) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_ERROR,
-                                                   GTK_BUTTONS_OK,
-                                                   "Erreur : Impossible d'ouvrir le fichier agent.txt.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    char line[512]; // Tampon pour stocker chaque ligne lue
-    int found = 0;  // Variable pour indiquer si l'agent a été trouvé
-
-    GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(treeview)));
-    if (store == NULL) {
-        // Si le modèle n'existe pas, le créer
-        store = gtk_list_store_new(11, // Nombre de colonnes
-            G_TYPE_STRING, // ID
-            G_TYPE_STRING, // Nom
-            G_TYPE_STRING, // Prénom
-            G_TYPE_STRING, // CIN
-            G_TYPE_STRING, // Date de naissance
-            G_TYPE_STRING, // Téléphone
-            G_TYPE_STRING, // Mail
-            G_TYPE_INT,    // Salaire
-            G_TYPE_STRING, // Gouvernorat
-            G_TYPE_STRING, // Sexe
-            G_TYPE_STRING  // Poste
+        // Effacer le contenu existant du TreeView
+        GtkListStore *store = gtk_list_store_new(8,
+                                                 G_TYPE_STRING, // ID
+                                                 G_TYPE_STRING, // Nom
+                                                 G_TYPE_STRING, // Date de naissance
+                                                 G_TYPE_STRING, // Sexe
+                                                 G_TYPE_STRING, // Gouvernorat
+                                                 G_TYPE_STRING, // Mail
+                                                 G_TYPE_STRING, // Numéro de téléphone
+                                                 G_TYPE_STRING  // Mot de passe
         );
-        gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
-        g_object_unref(store);
-    } else {
-        // Si un modèle existe déjà, on le vide avant d'ajouter de nouvelles données
-        gtk_list_store_clear(store);
-    }
+        GtkTreeIter iter;
 
-    // Lecture ligne par ligne pour trouver l'agent correspondant à l'ID
-    while (fgets(line, sizeof(line), file) != NULL) {
-        char id[50]; // Tampon pour extraire l'ID de chaque ligne
-        sscanf(line, "%49[^;]", id); // Extraction de l'ID de la ligne
-
-        if (strcmp(id, id_recherche) == 0) { // Comparaison avec l'ID recherché
-            found = 1; // Marquer que l'agent a été trouvé
-            remplir_treeview(treeview, line); // Remplir le TreeView avec les données
-            break;
-        }
-    }
-
-    fclose(file); // Fermeture du fichier après la lecture
-
-    // Affichage du résultat
-    if (!found) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Aucun agent trouvé avec l'ID : %s.", id_recherche);
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-    }
-}
-
-// Fonction pour remplir le TreeView avec les informations de l'agent
-void remplir_treeview(GtkWidget *treeview, const char *line) {
-    // Créer un modèle de liste pour le TreeView
-    GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(treeview)));
-
-    // Extraire les informations de l'agent de la ligne
-    char id[50], nom[50], prenom[50], cin[50], date_naissance[20], telephone[50], mail[50];
-    int salaire;
-    char gouvernorat[50], sexe[10], poste[20];
-
-    sscanf(line, "%49[^;];%49[^;];%49[^;];%49[^;];%19[^;];%49[^;];%49[^;];%d;%49[^;];%9[^;];%19[^\n]",
-           id, nom, prenom, cin, date_naissance, telephone, mail, &salaire, gouvernorat, sexe, poste);
-
-    // Ajouter une nouvelle ligne au modèle avec les informations de l'agent
-    GtkTreeIter iter;
-    gtk_list_store_append(store, &iter);
-    gtk_list_store_set(store, &iter,
-                       0, id,
-                       1, nom,
-                       2, prenom,
-                       3, cin,
-                       4, date_naissance,
-                       5, telephone,
-                       6, mail,
-                       7, salaire,
-                       8, gouvernorat,
-                       9, sexe,
-                       10, poste, // Utilisation de la variable poste ici
-                       -1); // Fin des arguments
-
-    // Vérifier si les colonnes sont déjà configurées
-    GList *columns = gtk_tree_view_get_columns(GTK_TREE_VIEW(treeview));
-    if (g_list_length(columns) == 0) {
-        GtkCellRenderer *renderer;
-        GtkTreeViewColumn *column;
-
-        const char *titles[] = {"ID", "Nom", "Prénom", "CIN", "Date de naissance", "Téléphone", "Mail",
-                                "Salaire", "Gouvernorat", "Sexe", "Poste"};
-
-        for (int i = 0; i < 11; i++) {
-            renderer = gtk_cell_renderer_text_new();
-            column = gtk_tree_view_column_new_with_attributes(titles[i], renderer, "text", i, NULL);
-            gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
-        }
-    }
-}
-
-
-
-//////////////////
-
-
-
-
-
-
-
-
-void
-on_button__modifier_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-
-GtkWidget *MODIFIER;
-    MODIFIER=create_MODIFIER();
-    gtk_widget_show(MODIFIER);
-
-}
-
-
-void
-on_button__supprimer__clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
-GtkWidget *SUPPRIMER;
-    SUPPRIMER=create_SUPPRIMER();
-    gtk_widget_show(SUPPRIMER);
-
-}
-
-
-void
-on_button__affrev_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_button2__rechercher_clicked         (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-
-
-    GtkWidget *window1;
-    window1=create_window1();
-    gtk_widget_show(window1);
-
-
-
-}
-
-
-void
-on_button__ajouter_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-    GtkWidget *AJOUTER;
-    AJOUTER=create_AJOUTER();
-    gtk_widget_show(AJOUTER);
-	
-
-}
-
-
-void on_button_retour_clicked(GtkButton *button, gpointer user_data) {
-    // Obtenir la fenêtre actuelle
-    GtkWidget *current_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-    
-    // Créer la fenêtre d'accueil
-    GtkWidget *HOME = create_HOME();
-    
-    // Afficher la fenêtre d'accueil
-    gtk_widget_show(HOME);
-    
-    // Fermer la fenêtre actuelle
-    gtk_widget_destroy(current_window);
-}
-
-
-void
-on_button2__retour__rech_clicked       (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *current_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
- GtkWidget *HOME =create_HOME();
-    gtk_widget_show(HOME);
-gtk_widget_destroy(current_window);
-
-}
-
-
-
-
-
-
-////////////////////////////////////////////////////////
-void on_button____RECHERCHER__clicked(GtkButton *button, gpointer user_data) {
-    GtkWidget *entry____rechercher = lookup_widget(GTK_WIDGET(button), "entry____rechercher");
-    const char *id_rechercher = gtk_entry_get_text(GTK_ENTRY(entry____rechercher));
-
-    // Vérifier si l'ID à rechercher est vide
-    if (strlen(id_rechercher) == 0) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Veuillez saisir un ID à rechercher.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    // Ouvrir le fichier pour la lecture
-    FILE *file = fopen("agent.txt", "r");
-    if (file == NULL) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_ERROR,
-                                                   GTK_BUTTONS_OK,
-                                                   "Erreur : Impossible d'ouvrir le fichier %s.", "agent.txt");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    // Variables pour lire les données
-    char line[512];
-    int found = 0;
-
-    // Lire chaque ligne et rechercher l'ID
-    while (fgets(line, sizeof(line), file)) {
-        char *id, *nom, *prenom, *cin, *date_naissance, *telephone, *mail, *salaire_str, *gouvernorat, *sexe;
-        char *poste_maintenance, *poste_securite, *poste_agent;
-
-        // Utilisation de strtok pour séparer les champs par le délimiteur ';'
-        id = strtok(line, ";");
-        nom = strtok(NULL, ";");
-        prenom = strtok(NULL, ";");
-        cin = strtok(NULL, ";");
-        date_naissance = strtok(NULL, ";");
-        telephone = strtok(NULL, ";");
-        mail = strtok(NULL, ";");
-        salaire_str = strtok(NULL, ";");
-        gouvernorat = strtok(NULL, ";");
-        sexe = strtok(NULL, ";");
-        poste_maintenance = strtok(NULL, ";");
-        poste_securite = strtok(NULL, ";");
-        poste_agent = strtok(NULL, "\n"); // Dernier champ avant le saut de ligne
-
-        // Vérifier si l'ID correspond
-        if (id != NULL && strcmp(id, id_rechercher) == 0) {
-            found = 1;
-
-            // Convertir le salaire en entier
-            int salaire = (salaire_str != NULL) ? atoi(salaire_str) : 0;
-
-            // Préparer le message à afficher
-            char message[512];
-            snprintf(message, sizeof(message),
-                     "Agent trouvé :\n\n"
-                     "ID : %s\nNom : %s\nPrénom : %s\nCIN : %s\nDate de naissance : %s\nTéléphone : %s\nMail : %s\nSalaire : %d\n"
-                     "Gouvernorat : %s\nSexe : %s\nPostes : %s %s %s",
-                     id, nom ? nom : "N/A", prenom ? prenom : "N/A", cin ? cin : "N/A", date_naissance ? date_naissance : "N/A",
-                     telephone ? telephone : "N/A", mail ? mail : "N/A", salaire,
-                     gouvernorat ? gouvernorat : "N/A", sexe ? sexe : "N/A",
-                     poste_maintenance ? poste_maintenance : "", poste_securite ? poste_securite : "", poste_agent ? poste_agent : "");
-
-            // Afficher les détails de l'agent trouvé
+        // Lecture du fichier citoyen.txt
+        FILE *f = fopen("citoyen.txt", "r");
+        if (f == NULL) {
             GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                       GTK_MESSAGE_INFO,
+                                                       GTK_DIALOG_MODAL,
+                                                       GTK_MESSAGE_ERROR,
                                                        GTK_BUTTONS_OK,
-                                                       "%s", message);
+                                                       "Erreur lors de l'ouverture du fichier citoyen.txt.");
             gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
-            break;
+            return;
         }
-    }
 
-    fclose(file);
+        char ligne[1024];
+        gboolean trouve = FALSE;
 
-    // Si l'ID n'a pas été trouvé
-    if (!found) {
+        while (fgets(ligne, sizeof(ligne), f)) {
+            ligne[strcspn(ligne, "\r\n")] = '\0'; // Supprimer les retours à la ligne
+
+            // Découper la ligne en tokens avec "/"
+            char *nom = strtok(ligne, "/");
+            char *id = strtok(NULL, "/");
+            char *mail = strtok(NULL, "/");
+            char *telephone = strtok(NULL, "/");
+            char *mot_de_passe = strtok(NULL, "/");
+            char *jour = strtok(NULL, "/");
+            char *mois = strtok(NULL, "/");
+            char *annee = strtok(NULL, "/");
+            char *gouvernorat = strtok(NULL, "/");
+            char *sexe = strtok(NULL, "/");
+
+            // Vérifier si l'ID correspond
+            if (id && strcmp(id, id_recherche) == 0) {
+                trouve = TRUE;
+
+                // Formater la date de naissance
+                char date_naissance[20];
+                snprintf(date_naissance, sizeof(date_naissance), "%s/%s/%s", jour, mois, annee);
+
+                // Ajouter les données au modèle
+                gtk_list_store_append(store, &iter);
+                gtk_list_store_set(store, &iter,
+                                   0, id,
+                                   1, nom,
+                                   2, date_naissance,
+                                   3, sexe,
+                                   4, gouvernorat,
+                                   5, mail,
+                                   6, telephone,
+                                   7, mot_de_passe,
+                                   -1);
+                break; // Sortir après avoir trouvé l'ID
+            }
+        }
+        fclose(f);
+
+        // Mettre à jour le TreeView avec le nouveau modèle
+        gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
+
+        // Libérer la mémoire du modèle
+        g_object_unref(store);
+
+        if (!trouve) {
+            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                       GTK_DIALOG_MODAL,
+                                                       GTK_MESSAGE_ERROR,
+                                                       GTK_BUTTONS_OK,
+                                                       "ID non trouvé.");
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
+    } else {
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Aucun agent trouvé avec l'ID %s.", id_rechercher);
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-    }
-}
-
-
-
-
-
-
-///////////////////////////////////////////////////
-
-
-
-
-
-
-void on_button__MODIFIER__clicked(GtkButton *button, gpointer user_data) {
-    // Widgets pour récupérer les données
-    GtkWidget *entry_rechercher = lookup_widget(GTK_WIDGET(button), "entry____rechercher");
-    GtkWidget *entry_nom = lookup_widget(GTK_WIDGET(button), "entry____nom");
-    GtkWidget *entry_prenom = lookup_widget(GTK_WIDGET(button), "entry____prenom");
-    GtkWidget *entry_cin = lookup_widget(GTK_WIDGET(button), "entry____cin");
-    GtkWidget *spinbutton_jour = lookup_widget(GTK_WIDGET(button), "spinbutton____jour");
-    GtkWidget *spinbutton_mois = lookup_widget(GTK_WIDGET(button), "spinbutton__mois");
-    GtkWidget *spinbutton_annee = lookup_widget(GTK_WIDGET(button), "spinbutton__annee");
-    GtkWidget *entry_telephone = lookup_widget(GTK_WIDGET(button), "entry____numtelephone");
-    GtkWidget *entry_mail = lookup_widget(GTK_WIDGET(button), "entry____addmail");
-    GtkWidget *spinbutton_salaire = lookup_widget(GTK_WIDGET(button), "spinbutton____sal");
-    GtkWidget *combobox_gouvernorat = lookup_widget(GTK_WIDGET(button), "comboboxentry____cov");
-    GtkWidget *checkbutton_maintenance = lookup_widget(GTK_WIDGET(button), "checkbutton____maintenence");
-    GtkWidget *checkbutton_securite = lookup_widget(GTK_WIDGET(button), "checkbutton____securite");
-    GtkWidget *checkbutton_agent = lookup_widget(GTK_WIDGET(button), "checkbutton____agent");
-    GtkWidget *radiobutton_homme = lookup_widget(GTK_WIDGET(button), "radiobutton____homme");
-
-    const char *id_rechercher = gtk_entry_get_text(GTK_ENTRY(entry_rechercher));
-
-    // Validation de l'ID saisi
-    if (strlen(id_rechercher) == 0) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Veuillez entrer un ID pour rechercher.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    // Variables pour lire et modifier le fichier
-    FILE *file = fopen("agent.txt", "r");
-    FILE *temp_file = fopen("temp.txt", "w");
-    if (file == NULL || temp_file == NULL) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                   GTK_DIALOG_MODAL,
                                                    GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
-                                                   "Erreur lors de l'ouverture du fichier.");
+                                                   "Erreur : Le widget d'entrée est invalide.");
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
-        return;
     }
-
-    char line[512];
-    int found = 0;
-
-    // Parcourir les lignes du fichier
-    while (fgets(line, sizeof(line), file)) {
-        char id[50], nom[50], cin[50], date_naissance[50], telephone[50], mail[50], gouvernorat[ 50];
-        char sexe[10], poste_1[20], poste_2[20], poste_3[20];
-        int salaire;
-
-        // Lire les données de chaque ligne
-        sscanf(line, "%49[^;];%49[^;];%49[^;];%49[^;];%49[^;];%49[^;];%d;%49[^;];%9[^;];%19[^;];%19[^;];%19[^\n]",
-               id, nom, cin, date_naissance, telephone, mail, &salaire, gouvernorat, sexe,
-               poste_1, poste_2, poste_3);
-
-        if (strcmp(id, id_rechercher) == 0) {
-            found = 1;
-
-            // Récupérer les nouvelles données depuis l'interface
-            const char *new_nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
-            const char *new_prenom = gtk_entry_get_text(GTK_ENTRY(entry_prenom));
-            const char *new_cin = gtk_entry_get_text(GTK_ENTRY(entry_cin));
-            int jour = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_jour));
-            int mois = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_mois));
-            int annee = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_annee));
-            char date_naissance[11];
-            snprintf(date_naissance, sizeof(date_naissance), "%02d/%02d/%04d", jour, mois, annee);
-            const char *new_telephone = gtk_entry_get_text(GTK_ENTRY(entry_telephone));
-            const char *new_mail = gtk_entry_get_text(GTK_ENTRY(entry_mail));
-
-            // Vérification de l'adresse e-mail
-            if (strchr(new_mail, '@') == NULL) {
-                GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                           GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                           GTK_MESSAGE_WARNING,
-                                                           GTK_BUTTONS_OK,
-                                                           "Veuillez entrer une adresse e-mail valide contenant '@'.");
-                gtk_dialog_run(GTK_DIALOG(dialog));
-                gtk_widget_destroy(dialog);
-                return;
-            }
-
-            int new_salaire = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_salaire));
-            const char *new_gouvernorat = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combobox_gouvernorat));
-            const char *new_sexe = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radiobutton_homme)) ? "Homme" : "Femme";
-            const char *new_poste_1 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_agent)) ? "Agent" : "";
-            const char *new_poste_2 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_securite)) ? "Sécurité" : "";
-            const char *new_poste_3 = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_maintenance)) ? "Maintenance" : "";
-
-            // Écrire les nouvelles données dans le fichier temporaire
-            fprintf(temp_file,"%s;%s;%s;%s;%s;%s;%s;%d;%s;%s;%s;%s;%s\n",
-                    id, new_nom, new_prenom, new_cin, date_naissance, new_telephone, new_mail, new_salaire, new_gouvernorat, new_sexe, new_poste_1, new_poste_2, new_poste_3);
-        } else {
-            // Écrire la ligne originale si l'ID ne correspond pas
-            fprintf(temp_file, "%s", line);
-        }
-    }
-
-    fclose(file);
-    fclose(temp_file);
-
-    if (!found) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Aucun agent trouvé avec cet ID.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    // Remplacer l'ancien fichier par le nouveau
-    remove("agent.txt");
-    rename("temp.txt", "agent.txt");
-
-    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                               GTK_DIALOG_DESTROY_WITH_PARENT,
-                                               GTK_MESSAGE_INFO,
-                                               GTK_BUTTONS_OK,
-                                               "Les informations de l'agent ont été mises à jour avec succès.");
-    gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
 }
-
-
-  
-
-
 
 
 
 
 void
-on_button2__retour__mod_clicked        (GtkButton       *button,
+on_button_modifier_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
-GtkWidget *current_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-GtkWidget *HOME =create_HOME();
-    gtk_widget_show(HOME);
-gtk_widget_destroy(current_window);
-
-
-}
-
-
-void
-on_radiobutton_____homme_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_radiobutton_____femme_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
-
-/*
-void
-on_buttonsearch_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-
-
-}
-
-
-void
-on_buttonsup_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-*/
-
-
-
-
-
-
-
-void remplir_treeview_with_we2(GtkWidget *treeviewwe2, const char *line);
-void on_buttonsearch_clicked(GtkButton *button, gpointer user_data);
-void on_buttonsup_clicked(GtkButton *button, gpointer user_data);
-
-// Fonction pour rechercher un agent et l'afficher dans le TreeView
-void on_buttonsearch_clicked(GtkButton *button, gpointer user_data) {
-    GtkWidget *searchid = lookup_widget(GTK_WIDGET(button), "searchid");
-    GtkWidget *treeviewwe2 = lookup_widget(GTK_WIDGET(button), "treeviewwe2");
-
-    const char *id_recherche = gtk_entry_get_text(GTK_ENTRY(searchid));
+    GtkWidget *entry_id = lookup_widget(GTK_WIDGET(button), "e_Id");
+    const char *id_recherche = gtk_entry_get_text(GTK_ENTRY(entry_id));
 
     if (strlen(id_recherche) == 0) {
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
-                                                   GTK_BUTTONS_OK,
-                                                   "Veuillez entrer un ID à rechercher.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    FILE *file = fopen("agent.txt", "r");
-    if (file == NULL) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                   GTK_DIALOG_MODAL,
                                                    GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
-                                                   "Erreur : Impossible d'ouvrir le fichier agent.txt.");
+                                                   "Veuillez entrer un ID valide.");
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         return;
     }
 
-    char line[512];
-    int found = 0;
-    GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(treeviewwe2)));
-    if (store == NULL) {
-        store = gtk_list_store_new(12, // Nombre de colonnes
-            G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
-            G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING, 
-            G_TYPE_STRING, G_TYPE_STRING);
-        gtk_tree_view_set_model(GTK_TREE_VIEW(treeviewwe2), GTK_TREE_MODEL(store));
-        g_object_unref(store);
-    } else {
-        gtk_list_store_clear(store);
-    }
+    Citoyen c_modifie;
 
-    while (fgets(line, sizeof(line), file) != NULL) {
-        char id[50];
-        sscanf(line, "%49[^;]", id);
+    // Widgets pour les champs de modification
+    GtkWidget *entry_nom = lookup_widget(GTK_WIDGET(button), "e_nom");
+    GtkWidget *spinbutton_jours = lookup_widget(GTK_WIDGET(button), "sb_jours");
+    GtkWidget *spinbutton_mois = lookup_widget(GTK_WIDGET(button), "sb_mois");
+    GtkWidget *spinbutton_annee = lookup_widget(GTK_WIDGET(button), "sb_annee");
+    GtkWidget *rb_femme = lookup_widget(GTK_WIDGET(button), "rb_femme");
+    GtkWidget *rb_homme = lookup_widget(GTK_WIDGET(button), "rb_homme");
+    GtkWidget *combobox_gouvernorat = lookup_widget(GTK_WIDGET(button), "cbe_gouvernorat");
+    GtkWidget *entry_mail = lookup_widget(GTK_WIDGET(button), "e_mail");
+    GtkWidget *entry_telephone = lookup_widget(GTK_WIDGET(button), "e_telephone");
+    GtkWidget *entry_passe = lookup_widget(GTK_WIDGET(button), "e_passe");
 
-        if (strcmp(id, id_recherche) == 0) {
-            found = 1;
-            remplir_treeview(treeviewwe2, line);
-            break;
-        }
-    }
+    // Remplir le citoyen avec les nouvelles valeurs
+    strcpy(c_modifie.id, id_recherche);
+    strcpy(c_modifie.nom, gtk_entry_get_text(GTK_ENTRY(entry_nom)));
+    c_modifie.jour = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_jours));
+    c_modifie.mois = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_mois));
+    c_modifie.annee = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spinbutton_annee));
+    strcpy(c_modifie.gouvernorat, gtk_combo_box_get_active_text(GTK_COMBO_BOX(combobox_gouvernorat)));
+    strcpy(c_modifie.email, gtk_entry_get_text(GTK_ENTRY(entry_mail)));
+    strcpy(c_modifie.telephone, gtk_entry_get_text(GTK_ENTRY(entry_telephone)));
+    strcpy(c_modifie.mot_de_passe, gtk_entry_get_text(GTK_ENTRY(entry_passe)));
+    strcpy(c_modifie.sexe, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rb_femme)) ? "Femme" : "Homme");
 
-    fclose(file);
-
-    if (!found) {
+    // Vérification de l'adresse e-mail
+    if (strchr(c_modifie.email, '@') == NULL) {
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
-                                                   "Aucun agent trouvé avec l'ID : %s.", id_recherche);
+                                                   "Veuillez entrer une adresse e-mail valide (doit contenir '@').");
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
+        return;
     }
-}
 
-// Fonction pour remplir le TreeView avec les informations de l'agent
-void remplir_treeview_with_we2(GtkWidget *treeviewwe2, const char *line) {
-    GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(treeviewwe2)));
-
-    char id[50], nom[50], prenom[50], cin[50], date_naissance[20], telephone[50], mail[50];
-    int salaire;
-    char gouvernorat[50], sexe[10], poste_maintenance[20], poste_securite[20], poste_agent[20];
-
-    sscanf(line, "%49[^;];%49[^;];%49[^;];%49[^;];%19[^;];%49[^;];%49[^;];%d;%49[^;];%9[^;];%19[^;];%19[^;];%19[^\n]",
-           id, nom, prenom, cin, date_naissance, telephone, mail, &salaire, gouvernorat, sexe, poste_maintenance, poste_securite, poste_agent);
-
-    GtkTreeIter iter;
-    gtk_list_store_append(store, &iter);
-    gtk_list_store_set(store, &iter,
-                       0, id,
-                       1, nom,
-                       2, prenom,
-                       3, cin,
-                       4, date_naissance,
-                       5, telephone,
-                       6, mail,
-                       7, salaire,
-                       8, gouvernorat,
-                       9, sexe,
-                       10, poste_maintenance,
-                       11, poste_securite,
-                       -1);
-
-    GList *columns = gtk_tree_view_get_columns(GTK_TREE_VIEW(treeviewwe2));
-    if (g_list_length(columns) == 0) {
-        GtkCellRenderer *renderer;
-        GtkTreeViewColumn *column;
-
-        const char *titles[] = {"ID", "Nom", "Prénom", "CIN", "Date de naissance", "Téléphone", "Mail",
-                                "Salaire", "Gouvernorat", "Sexe", "Poste Maintenance", "Poste Sécurité"};
-
-        for (int i = 0; i < 12; i++) {
-            renderer = gtk_cell_renderer_text_new();
-            column = gtk_tree_view_column_new_with_attributes(titles[i], renderer, "text", i, NULL);
-            gtk_tree_view_append_column(GTK_TREE_VIEW(treeviewwe2), column);
-        }
-    }
-}
-
-// Fonction pour supprimer un agent sélectionné du fichier et du TreeView
-void on_buttonsup_clicked(GtkButton *button, gpointer user_data) {
-    GtkWidget *treeviewwe2 = lookup_widget(GTK_WIDGET(button), "treeviewwe2");
-
-    GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeviewwe2));
-    GtkTreeModel *model;
-    GtkTreeIter iter;
-
-    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
-        gchar *id_to_remove;
-        gtk_tree_model_get(model, &iter, 0, &id_to_remove, -1); // Récupérer l'ID de la ligne sélectionnée
-
-        FILE *file = fopen("agent.txt", "r");
-        if (file == NULL) {
-            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                       GTK_MESSAGE_ERROR,
-                                                       GTK_BUTTONS_OK,
-                                                       "Erreur : Impossible d'ouvrir le fichier agent.txt.");
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            return;
-        }
-
-        FILE *temp_file = fopen("temp_agent.txt", "w");
-        if (temp_file == NULL) {
-            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                       GTK_MESSAGE_ERROR,
-                                                       GTK_BUTTONS_OK,
-                                                       "Erreur : Impossible d'ouvrir le fichier temporaire.");
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            fclose(file);
-            return;
-        }
-
-        char line[512];
-        int found = 0;
-        while (fgets(line, sizeof(line), file) != NULL) {
-            char id[50];
-            sscanf(line, "%49[^;]", id);
-            if (strcmp(id, id_to_remove) != 0) {
-                fputs(line, temp_file); // Écrire la ligne dans le fichier temporaire si l'ID ne correspond pas
-            } else {
-                found = 1; // Marquer que l'ID a été trouvé et supprimé
-            }
-        }
-
-        fclose(file);
-        fclose(temp_file);
-
-        if (found) {
-            remove("agent.txt");
-            rename("temp_agent.txt", "agent.txt"); // Remplacer l'ancien fichier par le nouveau
-            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                       GTK_MESSAGE_INFO,
-                                                       GTK_BUTTONS_OK,
-                                                       "Agent supprimé avec succès.");
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-
-            // Réactualiser le TreeView
-            gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(treeviewwe2))));
-        } else {
-            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                       GTK_MESSAGE_WARNING,
-                                                       GTK_BUTTONS_OK,
-                                                       "L'ID de l'agent sélectionné n'a pas été trouvé.");
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-        }
+    // Modifier le citoyen
+    if (modifier_citoyen(id_recherche, c_modifie)) {
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_INFO,
+                                                   GTK_BUTTONS_OK,
+                                                   "Modification réussie !");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
     } else {
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                   GTK_MESSAGE_WARNING,
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
-                                                   "Veuillez sélectionner un agent à supprimer.");
+                                                   "Erreur : ID introuvable.");
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
     }
@@ -952,170 +302,104 @@ void on_buttonsup_clicked(GtkButton *button, gpointer user_data) {
 
 
 
+void on_button_treeview_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *treeview = lookup_widget(GTK_WIDGET(button), "tableau_treeview");
 
-
-/////////////
-void
-on_button3retouur_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-GtkWidget *current_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-GtkWidget *HOME =create_HOME(); 
-    gtk_widget_show(HOME);
-gtk_widget_destroy(current_window);
-
-}
-
-
-void
-on_buttonretourlistes_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
-GtkWidget *current_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-GtkWidget *HOME =create_HOME() ;
-    gtk_widget_show(HOME);
-gtk_widget_destroy(current_window);
-}
-
-
-
-
-
-////////////////////////////////////////////////////
-
-
-void on_afficherlesagents_clicked(GtkButton *button, gpointer user_data) {
-    GtkWidget *treeview2 = lookup_widget(GTK_WIDGET(button), "treeview2");
-
-    if (treeview2 == NULL) {
-        return; // Ne rien faire si le widget n'est pas trouvé
-    }
-
-    // Définir le GtkListStore avec 11 colonnes et terminer par G_TYPE_INVALID
-    GtkListStore *store = gtk_list_store_new(11, 
+    // Modèle pour le TreeView
+    GtkListStore *store = gtk_list_store_new(8, 
         G_TYPE_STRING, // ID
         G_TYPE_STRING, // Nom
-        G_TYPE_STRING, // Prénom
-        G_TYPE_STRING, // CIN
         G_TYPE_STRING, // Date de naissance
-        G_TYPE_STRING, // Téléphone
-        G_TYPE_STRING, // Mail
-        G_TYPE_INT,    // Salaire
-        G_TYPE_STRING, // Gouvernorat
         G_TYPE_STRING, // Sexe
-        G_TYPE_STRING  // Poste
+        G_TYPE_STRING, // Gouvernorat
+        G_TYPE_STRING, // Mail
+        G_TYPE_STRING, // Numéro de téléphone
+        G_TYPE_STRING  // Mot de passe
     );
-
     GtkTreeIter iter;
-    FILE *f = fopen("agent.txt", "r");
+
+    // Lecture du fichier et ajout des citoyens au modèle
+    FILE *f = fopen("citoyen.txt", "r");
     if (f == NULL) {
         GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
                                                    GTK_DIALOG_MODAL,
                                                    GTK_MESSAGE_ERROR,
                                                    GTK_BUTTONS_OK,
-                                                   "Erreur lors de l'ouverture du fichier agent.txt");
+                                                   "Erreur lors de l'ouverture du fichier citoyen.txt");
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         return;
     }
 
     char ligne[1024];
-    int count = 0; // Compteur de lignes lues
     while (fgets(ligne, sizeof(ligne), f)) {
-        ligne[strcspn(ligne, "\r\n")] = 0; // Supprime le retour à la ligne
+        // Supprimer les retours à la ligne
+        ligne[strcspn(ligne, "\r\n")] = '\0';
 
-        // Afficher la ligne lue pour débogage
-        printf("Ligne lue : %s\n", ligne);
+        // Découper la ligne en tokens avec "/"
+        char *nom = strtok(ligne, "/");
+        char *id = strtok(NULL, "/");
+        char *mail = strtok(NULL, "/");
+        char *telephone = strtok(NULL, "/");
+        char *mot_de_passe = strtok(NULL, "/");
+        char *jour = strtok(NULL, "/");
+        char *mois = strtok(NULL, "/");
+        char *annee = strtok(NULL, "/");
+        char *gouvernorat = strtok(NULL, "/");
+        char *sexe = strtok(NULL, "/");
 
-        // Découper la ligne en tokens avec ";"
-        char *tokens[11] = {""}; // Initialiser le tableau avec des chaînes vides
-        char *token = strtok(ligne, ";");
-        int i = 0;
+        // Vérifier que toutes les données sont présentes
+        if (nom && id && mail && telephone && mot_de_passe && jour && mois && annee && gouvernorat && sexe) {
+            // Formater la date de naissance
+            char date_naissance[20];
+            snprintf(date_naissance, sizeof(date_naissance), "%s/%s/%s", jour, mois, annee);
 
-        while (token != NULL && i < 11) {
-            tokens[i++] = token;
-            token = strtok(NULL, ";");
+            // Ajouter les données au modèle
+            gtk_list_store_append(store, &iter);
+            gtk_list_store_set(store, &iter,
+                               0, id,
+                               1, nom,
+                               2, date_naissance,
+                               3, sexe,
+                               4, gouvernorat,
+                               5, mail,
+                               6, telephone,
+                               7, mot_de_passe,
+                               -1);
         }
-
-        // Ajouter une chaîne vide pour les colonnes manquantes
-        while (i < 11) {
-            tokens[i++] = ""; // Ajoute une chaîne vide pour chaque champ manquant
-        }
-
-        // Déterminer le poste à afficher
-        char *poste = "";
-        if (strcmp(tokens[10], "Maintenance") == 0) {
-            poste = "Maintenance";
-        } else if (strcmp(tokens[10], "Sécurité") == 0) {
-            poste = "Sécurité";
-        } else if (strcmp(tokens[10], "Agent") == 0) {
-            poste = "Agent";
-        }
-
-        // Ajouter l'élément au store
-        gtk_list_store_append(store, &iter);
-        gtk_list_store_set(store, &iter,
-                           0, tokens[0],      // ID
-                           1, tokens[1],      // Nom
-                           2, tokens[2],      // Prénom
-                           3, tokens[3],      // CIN
-                           4, tokens[4],      // Date de naissance
-                           5, tokens[5],      // Téléphone
-                           6, tokens[6],      // Mail
-                           7, atoi(tokens[7]),// Salaire
-                           8, tokens[8],      // Gouvernorat
-                           9, tokens[9],      // Sexe
-                           10, poste           // Poste
-                           );
-        count++;
     }
     fclose(f);
 
-    // Vérifiez combien de lignes ont été lues
-    if (count == 0) {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-                                                   GTK_DIALOG_MODAL,
-                                                   GTK_MESSAGE_INFO,
-                                                   GTK_BUTTONS_OK,
-                                                   "Aucune donnée trouvée dans agent.txt");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-    } else {
-        printf("Lignes lues : %d\n", count); // Compte des lignes lues
+    // Lier le modèle au TreeView
+    gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
+
+    // Supprimer toutes les colonnes existantes avant d'en ajouter de nouvelles
+    while (gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)) {
+        gtk_tree_view_remove_column(GTK_TREE_VIEW(treeview), gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0));
     }
 
-    gtk_tree_view_set_model(GTK_TREE_VIEW(treeview2), GTK_TREE_MODEL(store));
-
-    // Supprimer les colonnes existantes
-    while (gtk_tree_view_get_column(GTK_TREE_VIEW(treeview2), 0)) {
-        gtk_tree_view_remove_column(GTK_TREE_VIEW(treeview2), gtk_tree_view_get_column(GTK_TREE_VIEW(treeview2), 0));
-    }
-
-    // Ajouter les colonnes
+    // Ajouter les colonnes au TreeView
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("ID", renderer, "text", 0, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Nom", renderer, "text", 1, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Prénom", renderer, "text", 2, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("CIN", renderer, "text", 3, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Date de naissance", renderer, "text", 4, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Téléphone", renderer, "text", 5, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Mail", renderer, "text", 6, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Salaire", renderer, "text", 7, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Gouvernorat", renderer, "text", 8, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Sexe", renderer, "text", 9, NULL));
-    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview2), 
-        gtk_tree_view_column_new_with_attributes("Poste", renderer, "text", 10, NULL));
 
+    GtkTreeViewColumn *col_id = gtk_tree_view_column_new_with_attributes("ID", renderer, "text", 0, NULL);
+    GtkTreeViewColumn *col_nom = gtk_tree_view_column_new_with_attributes("Nom", renderer, "text", 1, NULL);
+    GtkTreeViewColumn *col_date_naissance = gtk_tree_view_column_new_with_attributes("Date de naissance", renderer, "text", 2, NULL);
+    GtkTreeViewColumn *col_sexe = gtk_tree_view_column_new_with_attributes("Sexe", renderer, "text", 3, NULL);
+    GtkTreeViewColumn *col_gouvernorat = gtk_tree_view_column_new_with_attributes("Gouvernorat", renderer, "text", 4, NULL);
+    GtkTreeViewColumn *col_mail = gtk_tree_view_column_new_with_attributes("Mail", renderer, "text", 5, NULL);
+    GtkTreeViewColumn *col_numero = gtk_tree_view_column_new_with_attributes("Numéro de téléphone", renderer, "text", 6, NULL);
+    GtkTreeViewColumn *col_mot_de_passe = gtk_tree_view_column_new_with_attributes("Mot de passe", renderer, "text", 7, NULL);
+
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_id);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_nom);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_date_naissance);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_sexe);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_gouvernorat);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_mail);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_numero);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_mot_de_passe);
+
+    // Libérer la mémoire du modèle
     g_object_unref(store);
 }
 
@@ -1123,18 +407,409 @@ void on_afficherlesagents_clicked(GtkButton *button, gpointer user_data) {
 
 
 
-void
-on_buttonafficherlaliste__clicked      (GtkButton       *button,
-                                        gpointer         user_data)
-{
-GtkWidget *LISTEAGENT;
-    LISTEAGENT=create_LISTEAGENT();
-    gtk_widget_show(LISTEAGENT);
+void on_button_thez_modifier_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window2;
 
+    // Crée et affiche la nouvelle fenêtre (window2)
+    window2 = create_window2();
+    gtk_widget_show(window2);
 
+    // Ferme la fenêtre actuelle (window1)
+    GtkWidget *window1 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window1);
+
+   
 }
 
 
 
 
+
+
+
+
+void on_button_supprimer_clicked(GtkButton *button, gpointer user_data) {
+    // Récupérer le TreeView
+    GtkWidget *treeview = lookup_widget(GTK_WIDGET(button), "tableau_treeview");
+
+    // Récupérer la sélection actuelle dans le TreeView
+    GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+
+    // Vérifier si une ligne est sélectionnée
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        // Récupérer l'ID du citoyen sélectionné dans le TreeView
+        gchar *id_to_delete;
+        gtk_tree_model_get(model, &iter, 0, &id_to_delete, -1);  // 0 correspond à la colonne ID
+
+        // Supprimer la ligne du TreeView
+        gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+
+        // Ouvrir le fichier citoyen.txt
+        FILE *f = fopen("citoyen.txt", "r");
+        if (f == NULL) {
+            perror("Erreur d'ouverture du fichier");
+            return;
+        }
+
+        // Ouvrir un fichier temporaire pour sauvegarder les données après suppression
+        FILE *f_temp = fopen("temp.txt", "w");
+        if (f_temp == NULL) {
+            perror("Erreur d'ouverture du fichier temporaire");
+            fclose(f);
+            return;
+        }
+
+        char buffer[1024];
+        int id_found = 0;
+
+        // Lire le fichier et copier tout sauf la ligne contenant l'ID à supprimer
+        while (fgets(buffer, sizeof(buffer), f)) {
+            if (strstr(buffer, id_to_delete) != NULL) {
+                id_found = 1;  // Marquer que l'ID a été trouvé et supprimé
+            } else {
+                fputs(buffer, f_temp);  // Copier la ligne dans le fichier temporaire
+            }
+        }
+
+        fclose(f);
+        fclose(f_temp);
+
+        // Si l'ID n'a pas été trouvé
+        if (!id_found) {
+            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                       GTK_DIALOG_MODAL,
+                                                       GTK_MESSAGE_ERROR,
+                                                       GTK_BUTTONS_OK,
+                                                       "Aucun citoyen trouvé avec cet ID.");
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+            return;
+        }
+
+        // Remplacer le fichier citoyen.txt par le fichier temporaire
+        remove("citoyen.txt");
+        rename("temp.txt", "citoyen.txt");
+
+        // Afficher un message de confirmation
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_INFO,
+                                                   GTK_BUTTONS_OK,
+                                                   "Citoyen supprimé avec succès.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+
+        // Libérer la mémoire allouée pour l'ID
+        g_free(id_to_delete);
+    } else {
+        // Si aucune ligne n'est sélectionnée
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
+                                                   GTK_BUTTONS_OK,
+                                                   "Veuillez sélectionner un citoyen à supprimer.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
+}
+
+
+
+
+void
+on_button_login_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *window3;
+
+    window3 = create_window3();
+    gtk_widget_show(window3);
+
+
+  GtkWidget *window5;
+
+    window5 = create_window5();
+    gtk_widget_show(window5);
+
+GtkWidget *window4 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window4);
+
+}
+
+
+void
+on_button_newacoount_clicked           (GtkButton       *button,
+                                        gpointer         user_data)
+{
+ GtkWidget *window1;
+
+    // Crée et affiche la nouvelle fenêtre (window2)
+    window1 = create_window1();
+    gtk_widget_show(window1);
+
+GtkWidget *window4 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window4);
+
+}
+
+
+void
+on_button_mesinformations_clicked      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *treeview = lookup_widget(GTK_WIDGET(button), "treeview_donnne_modifer");
+
+    // Modèle pour le TreeView
+    GtkListStore *store = gtk_list_store_new(8, 
+        G_TYPE_STRING, // ID
+        G_TYPE_STRING, // Nom
+        G_TYPE_STRING, // Date de naissance
+        G_TYPE_STRING, // Sexe
+        G_TYPE_STRING, // Gouvernorat
+        G_TYPE_STRING, // Mail
+        G_TYPE_STRING, // Numéro de téléphone
+        G_TYPE_STRING  // Mot de passe
+    );
+    GtkTreeIter iter;
+
+    // Lecture du fichier et ajout des citoyens au modèle
+    FILE *f = fopen("citoyen.txt", "r");
+    if (f == NULL) {
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
+                                                   GTK_DIALOG_MODAL,
+                                                   GTK_MESSAGE_ERROR,
+                                                   GTK_BUTTONS_OK,
+                                                   "Erreur lors de l'ouverture du fichier citoyen.txt");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
+    char ligne[1024];
+    while (fgets(ligne, sizeof(ligne), f)) {
+        // Supprimer les retours à la ligne
+        ligne[strcspn(ligne, "\r\n")] = '\0';
+
+        // Découper la ligne en tokens avec "/"
+        char *nom = strtok(ligne, "/");
+        char *id = strtok(NULL, "/");
+        char *mail = strtok(NULL, "/");
+        char *telephone = strtok(NULL, "/");
+        char *mot_de_passe = strtok(NULL, "/");
+        char *jour = strtok(NULL, "/");
+        char *mois = strtok(NULL, "/");
+        char *annee = strtok(NULL, "/");
+        char *gouvernorat = strtok(NULL, "/");
+        char *sexe = strtok(NULL, "/");
+
+        // Vérifier que toutes les données sont présentes
+        if (nom && id && mail && telephone && mot_de_passe && jour && mois && annee && gouvernorat && sexe) {
+            // Formater la date de naissance
+            char date_naissance[20];
+            snprintf(date_naissance, sizeof(date_naissance), "%s/%s/%s", jour, mois, annee);
+
+            // Ajouter les données au modèle
+            gtk_list_store_append(store, &iter);
+            gtk_list_store_set(store, &iter,
+                               0, id,
+                               1, nom,
+                               2, date_naissance,
+                               3, sexe,
+                               4, gouvernorat,
+                               5, mail,
+                               6, telephone,
+                               7, mot_de_passe,
+                               -1);
+        }
+    }
+    fclose(f);
+
+    // Lier le modèle au TreeView
+    gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
+
+    // Supprimer toutes les colonnes existantes avant d'en ajouter de nouvelles
+    while (gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0)) {
+        gtk_tree_view_remove_column(GTK_TREE_VIEW(treeview), gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0));
+    }
+
+    // Ajouter les colonnes au TreeView
+    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+
+    GtkTreeViewColumn *col_id = gtk_tree_view_column_new_with_attributes("ID", renderer, "text", 0, NULL);
+    GtkTreeViewColumn *col_nom = gtk_tree_view_column_new_with_attributes("Nom", renderer, "text", 1, NULL);
+    GtkTreeViewColumn *col_date_naissance = gtk_tree_view_column_new_with_attributes("Date de naissance", renderer, "text", 2, NULL);
+    GtkTreeViewColumn *col_sexe = gtk_tree_view_column_new_with_attributes("Sexe", renderer, "text", 3, NULL);
+    GtkTreeViewColumn *col_gouvernorat = gtk_tree_view_column_new_with_attributes("Gouvernorat", renderer, "text", 4, NULL);
+    GtkTreeViewColumn *col_mail = gtk_tree_view_column_new_with_attributes("Mail", renderer, "text", 5, NULL);
+    GtkTreeViewColumn *col_numero = gtk_tree_view_column_new_with_attributes("Numéro de téléphone", renderer, "text", 6, NULL);
+    GtkTreeViewColumn *col_mot_de_passe = gtk_tree_view_column_new_with_attributes("Mot de passe", renderer, "text", 7, NULL);
+
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_id);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_nom);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_date_naissance);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_sexe);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_gouvernorat);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_mail);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_numero);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), col_mot_de_passe);
+
+    // Libérer la mémoire du modèle
+    g_object_unref(store);
+}
+
+
+
+void
+on_button_modifermesinfos_clicked      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *window2;
+
+   
+    window2 = create_window2();
+    gtk_widget_show(window2);
+
+}
+
+
+void
+on_button_help1_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *window6;
+
+   
+    window6 = create_window6();
+    gtk_widget_show(window6);
+}
+
+
+void
+on_button_help3_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *window6;
+
+   
+    window6 = create_window6();
+    gtk_widget_show(window6);
+}
+
+
+void
+on_button_help2_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+GtkWidget *window6;
+
+   
+    window6 = create_window6();
+    gtk_widget_show(window6);
+}
+
+
+
+#include <gtk/gtk.h>
+
+void on_button_envoyer_clicked(GtkButton *button, gpointer user_data) {
+    // Créer une boîte de dialogue de type message
+    GtkWidget *dialog = gtk_message_dialog_new(
+        GTK_WINDOW(user_data),                // Fenêtre parente
+        GTK_DIALOG_MODAL,                    // Propriétés de la boîte de dialogue
+        GTK_MESSAGE_INFO,                    // Type de message : INFO
+        GTK_BUTTONS_OK,                      // Boutons affichés : OK
+        "Le problème a été envoyé au service technique." // Message à afficher
+    );
+
+    // Afficher la boîte de dialogue et attendre une réponse
+    gtk_dialog_run(GTK_DIALOG(dialog));
+
+    // Détruire la boîte de dialogue après fermeture
+    gtk_widget_destroy(dialog);
+}
+
+
+
+
+
+
+void
+on_button_tarjee_bienvenue_clicked     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *window4;
+
+    // Crée et affiche la nouvelle fenêtre (window2)
+    window4 = create_window4();
+    gtk_widget_show(window4);
+
+    // Ferme la fenêtre actuelle (window1)
+    GtkWidget *window1 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window1);
+}
+
+
+void
+on_button_back_compte_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+
+
+    // Ferme la fenêtre actuelle (window1)
+    GtkWidget *window2 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window2);
+
+   GtkWidget *window3;
+
+    // Crée et affiche la nouvelle fenêtre (window2)
+    window3 = create_window3();
+    gtk_widget_show(window3);
+}
+
+
+
+void
+on_button_anuuler_help_clicked         (GtkButton       *button,
+                                        gpointer         user_data)
+{
+ GtkWidget *window6 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window6);
+}
+
+
+
+
+
+void
+on_button_fermer_citoyen_clicked       (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *window4;
+
+    // Crée et affiche la nouvelle fenêtre (window2)
+    window4 = create_window4();
+    gtk_widget_show(window4);
+
+    // Ferme la fenêtre actuelle (window1)
+    GtkWidget *window3 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window3);
+}
+
+
+void
+on_button_fermer_compte_clicked        (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    GtkWidget *window4;
+
+    // Crée et affiche la nouvelle fenêtre (window2)
+    window4 = create_window4();
+    gtk_widget_show(window4);
+
+    // Ferme la fenêtre actuelle (window1)
+    GtkWidget *window5 = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_destroy(window5);
+}
 
