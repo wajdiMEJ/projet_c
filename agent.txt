@@ -1,0 +1,3 @@
+2;wajih;mejbri;741258;3/4/1920;78963245;wajih@gmail.com;23;Gafsa;Homme;Sécurité
+3;mohamed ;med;45698712;15/12/1923;45612789;wohamed@gmail.com;6;Médenine;Homme;Agent
+4;wajdi;mejjb;7896321;11/9/1926;123654;wajdi123@gmail.com;2;Sidi Bouzid;Homme;Maintenance;;
